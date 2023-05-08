@@ -1,15 +1,23 @@
 const express = require("express");
-
+const path = require("path")
 const app = express();
 
-app.use((req,res,next) => {
-    console.log("1st");
-    next();
+const rootDir = require("./util/path");
+
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+
+app.use(express.urlencoded({extended: true}));
+app.use(express.static(path.join(rootDir, 'public')))
+
+app.use('/admin',adminRoutes);
+app.use(shopRoutes);
+
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(rootDir, 'views', 'pagenotfound.html'));
 })
 
-app.use((req,res,next) => {
-    console.log("2nd");
-})
-app.listen(3000, () => {
-  console.log(`Server Running on http://localhost:3000`);
+
+app.listen(4001, () => {
+  console.log(`Server Running on http://localhost:4001`);
 });
